@@ -28,6 +28,7 @@ function setup() {
 	sel.position(405, height+10);
 	sel.option("block");
 	sel.option("teleporter");
+	sel.option("player");
 	
 	//creates a button to recenter camera
 	centerButton = createButton("Reset Camera");
@@ -46,6 +47,9 @@ function setup() {
 	//make an array for the teleporters to go into
 	teleporters = [];
 	
+	//make an array for the players to go into
+	players = [];
+	
 	//make a new camera object so I can control it's placement/movement
 	cam = new Camera();
 	
@@ -63,6 +67,7 @@ function setup() {
 	drawing = false;
 	moving = false;
 	grid = 16;
+	testing = false;
 }
 
 function draw () {
@@ -87,12 +92,14 @@ function draw () {
 	//check if the user wants it snapped to the grid
 	if (gridBox.checked()) {
 		for (var i = 0; i < width / grid; i++) {
-			push();
-			stroke(200)
-			strokeWeight(1);
-			line((cam.x - cam.x % grid) + i * grid, cam.y, (cam.x - cam.x % grid) + i * grid, cam.y + height);
-			line(cam.x, (cam.y - cam.y % grid) + i * grid, cam.x + width, (cam.y - cam.y % grid) + i * grid);
-			pop();
+			if (!(testing)) {
+				push();
+				stroke(200)
+				strokeWeight(1);
+				line((cam.x - cam.x % grid) + i * grid, cam.y, (cam.x - cam.x % grid) + i * grid, cam.y + height);
+				line(cam.x, (cam.y - cam.y % grid) + i * grid, cam.x + width, (cam.y - cam.y % grid) + i * grid);
+				pop();
+			}
 		}
 	}
 	
@@ -104,6 +111,14 @@ function draw () {
 	//draw all of the teleporters you created
 	for (var i = 0; i < teleporters.length; i++) {
 		teleporters[i].show();
+	}
+	
+	//draw and update all of the players you created
+	for (var i = 0; i < player.length; i++) {
+		players[i].show();
+		if (testing) {
+			players[i].update();	
+		}
 	}
 	
 	//if you are holding the right mouse button draw the bod you are trying to create
@@ -152,22 +167,24 @@ function mousePressed() {
 	//if left mouse pressed set the top-left corner of the rectangle to that mouse position
 	if (onScreen) {
 		if (mouseButton == LEFT) {
-			if (gridBox.checked()) {
-				if (mousex % grid < grid / 2) {
-					initx = mousex - mousex % grid
+			if (!(sel.value() == "player")) {
+				if (gridBox.checked()) {
+					if (mousex % grid < grid / 2) {
+						initx = mousex - mousex % grid
+					} else {
+						initx = mousex + (grid - mousex % grid);
+					}
+					if (mousey % grid < grid / 2) {
+						inity = mousey - mousey % grid;
+					} else {
+						inity = mousey + (grid - mousey % grid);
+					}
 				} else {
-					initx = mousex + (grid - mousex % grid);
+					initx = mousex;
+					inity = mousey;
 				}
-				if (mousey % grid < grid / 2) {
-					inity = mousey - mousey % grid;
-				} else {
-					inity = mousey + (grid - mousey % grid);
-				}
-			} else {
-				initx = mousex;
-				inity = mousey;
+				drawing = true;
 			}
-			drawing = true;
 		}
 	}
 }
@@ -183,6 +200,8 @@ function mouseReleased() {
 				}
 			} else if (sel.value() == "teleporter") {
 				teleporters.push(new Teleporter(initx, inity, initw, inith))
+			} else if (sel.value() == "player") {
+				players.push(new Player(mousex, mousey))
 			}
 		}
 	}
