@@ -114,7 +114,7 @@ function draw () {
 	}
 	
 	//draw and update all of the players you created
-	for (var i = 0; i < player.length; i++) {
+	for (var i = 0; i < players.length; i++) {
 		players[i].show();
 		if (testing) {
 			players[i].update();	
