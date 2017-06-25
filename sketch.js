@@ -41,9 +41,12 @@ function setup() {
 	testButton.mousePressed(testGame);
 	
 	//creates an output to recreate the design in game
-	paragraph = createP("This is where the output will be")
-	paragraph.position(width + 12, 0)
-	paragraph.size(350,700)
+	paragraph = createP("This is where the output will be");
+	paragraph.position(width + 12, 0);
+	paragraph.size(350,700);
+	
+	//make and array for everything you create
+	everything = [];
 	
 	//make an array for the blocks to go into
 	blocks = [];
@@ -212,18 +215,21 @@ function mouseReleased() {
 			drawing = false;
 			if (sel.value() == "block") {
 				if (initw > 0 && inith > 0) {
-					blocks.push(new Block(initx, inity, initw, inith))
+					blocks.push(new Block(initx, inity, initw, inith));
+					everything.push(blocks[blocks.length - 1]);
 				}
 			} else if (sel.value() == "teleporter") {
-				teleporters.push(new Teleporter(initx, inity, initw, inith, identifier))
+				teleporters.push(new Teleporter(initx, inity, initw, inith, identifier));
+				everything.push(teleporters[teleporters.length - 1]);
 				if (first) {
 					first = false;
 				} else {
 					first = true;
-					identifier += 1
+					identifier += 1;
 				}
 			} else if (sel.value() == "player") {
-				players.push(new Player(mousex, mousey))
+				players.push(new Player(mousex, mousey));
+				everything.push(players[players.length - 1]);
 			}
 		}
 	}
