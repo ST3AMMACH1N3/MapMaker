@@ -278,6 +278,9 @@ function createOutput() {
 	for (var i = 0; i < teleporters.length; i++) {
 		paragraph.html(paragraph.html() + "teleporters.push(new Teleporter(" + teleporters[i].x + ", " + teleporters[i].y + ", " + teleporters[i].w + ", " + teleporters[i].h + ")); ")
 	}
+	for (var i = 0; i < players.length; i++) {
+		paragraph.html(paragraph.html() + "players.push(new Player(" + players[i].x + ", " + players[i].y + ")); ")
+	}
 }
 
 //toggle between whether the mouse is on or off screen so you can't accidentally make blocks
