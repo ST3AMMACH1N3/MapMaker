@@ -248,7 +248,7 @@ function keyPressed() {
 		}
 		
 		for (var i = players.length-1; i >= 0; i--) {
-			if (mousex > players[i].x && mousex < players[i].x + players[i].w && mousey > players[i].y && mousey < players[i].y + players[i].h) {
+			if (mousex > players[i].x - players[i].w / 2 && mousex < players[i].x + players[i].w / 2 && mousey > players[i].y - players[i].w / 2 && mousey < players[i].y + players[i].w / 2) {
 				players.splice(i,1);
 				break;
 			}
