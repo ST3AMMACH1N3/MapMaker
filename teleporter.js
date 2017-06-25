@@ -1,8 +1,9 @@
-function Teleporter(x, y, w, h) {
+function Teleporter(x, y, w, h, id) {
 	this.x = x
 	this.y = y
 	this.w = w
 	this.h = h
+	this.id = id
 	
 	this.show = function() {
 		stroke(0);
