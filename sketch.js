@@ -71,7 +71,13 @@ function setup() {
 	drawing = false;
 	moving = false;
 	grid = 16;
+	
+	//set up the variable to determine if you are testing or not
 	testing = false;
+	
+	//create and id and counter variable for teleporters
+	identifier = 0;
+	first = true;
 }
 
 function draw () {
@@ -209,7 +215,13 @@ function mouseReleased() {
 					blocks.push(new Block(initx, inity, initw, inith))
 				}
 			} else if (sel.value() == "teleporter") {
-				teleporters.push(new Teleporter(initx, inity, initw, inith))
+				if (first) {
+					first = false;
+				} else {
+					identifier += 1
+					first = true;
+				}
+				teleporters.push(new Teleporter(initx, inity, initw, inith, identifier))
 			} else if (sel.value() == "player") {
 				players.push(new Player(mousex, mousey))
 			}
