@@ -1,4 +1,4 @@
-var canv, input, gridBox, coordBox, sel, centerButton, paragraph;
+var canv, input, gridBox, coordBox, sel, centerButton, testButton, paragraph;
 
 function setup() {
 	//create the canvas
@@ -33,8 +33,12 @@ function setup() {
 	//creates a button to recenter camera
 	centerButton = createButton("Reset Camera");
 	centerButton.position(504, height+10);
-	centerButton.mousePressed(resetCamera)
+	centerButton.mousePressed(resetCamera);
 	
+	//creates a button to test the map
+	testButton = createButton("Test Game");
+	testButton.position(5, height + 30);
+	testButton.mousePressed(testGame);
 	
 	//creates an output to recreate the design in game
 	paragraph = createP("This is where the output will be")
@@ -273,6 +277,16 @@ function toggleOnScreen() {
 function resetCamera() {
 	cam.x = 0;
 	cam.y = 0;
+}
+
+function testGame() {
+	if (testing) {
+		testing = false;
+		testButton.value("Test Game")
+	} else {
+		testing = true;
+		testButton.value("Stop Testing")
+	}
 }
 
 function keyPressed() {
