@@ -215,13 +215,13 @@ function mouseReleased() {
 					blocks.push(new Block(initx, inity, initw, inith))
 				}
 			} else if (sel.value() == "teleporter") {
+				teleporters.push(new Teleporter(initx, inity, initw, inith, identifier))
 				if (first) {
 					first = false;
 				} else {
-					identifier += 1
 					first = true;
+					identifier += 1
 				}
-				teleporters.push(new Teleporter(initx, inity, initw, inith, identifier))
 			} else if (sel.value() == "player") {
 				players.push(new Player(mousex, mousey))
 			}
