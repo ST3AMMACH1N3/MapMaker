@@ -282,10 +282,10 @@ function resetCamera() {
 function testGame() {
 	if (testing) {
 		testing = false;
-		testButton.value("Test Game")
+		testButton.html("Test Game")
 	} else {
 		testing = true;
-		testButton.value("Stop Testing")
+		testButton.html("Stop Testing")
 	}
 }
 
