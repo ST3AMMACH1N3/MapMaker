@@ -1,6 +1,8 @@
 function Player(x, y) {
 	this.x = x;
 	this.y = y;
+	this.placedx = x;
+	this.placedy = y;
 	this.w = 20;
 	this.yspeed = 0;
 	this.hspeed = 0;
