@@ -75,7 +75,9 @@ function draw () {
 	background(150);
 	
 	//update camera position and view the camera
-	cam.update();
+	if (!(testing)) {
+		cam.update();
+	}
 	cam.show();
 	
 	//if the text in the grid box is a number set the grid size to it, otherwise set it to the default
