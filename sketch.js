@@ -368,6 +368,9 @@ function testGame() {
 	if (testing) {
 		testing = false;
 		testButton.html("Test Game")
+		for (var i = 0; i < teleporters.length; i++) {
+			teleporters[i].canTeleport = True;	
+		}
 	} else {
 		testing = true;
 		testButton.html("Stop Testing")
