@@ -177,7 +177,17 @@ function draw () {
 		stroke(0, 0, 0, 150);
 		strokeWeight(2);
 		fill(255, 255, 255, 150);
-		rect(initx, inity, initw, inith);
+		rectMode(CORNERS)
+		if (initx < mousex && inity < mousey) {
+			rect(initx, inity, initx + initw, inity + inith);
+		} else if (initx > mousex && inity < mousey) {
+			rect(initx, inity, initx - initw, inity + inith);
+		}
+		else if (initx < mousex && inity > mousey) {
+			rect(initx, inity, initx + initw, inity-inith);
+		} else {
+			rect(initx, inity, initx-initw, inity-inith);
+		}
 		pop();
 	}
 }
@@ -215,11 +225,27 @@ function mouseReleased() {
 			drawing = false;
 			if (sel.value() == "block") {
 				if (initw > 0 && inith > 0) {
-					blocks.push(new Block(initx, inity, initw, inith));
+					if (initx < mousex && inity < mousey) {
+						blocks.push(new Block(initx, inity, initw, inith));
+					} else if (initx > mousex && inity < mousey) {
+						blocks.push(new Block(initx-initw, inity, initw, inith));
+					} else if (initx < mousex && inity > mousey) {
+						blocks.push(new Block(initx, inity-inith, initw, inith));
+					} else {
+						blocks.push(new Block(initx-initw, inity-inith, initw, inith));
+					}
 					everything.push(blocks[blocks.length - 1]);
 				}
 			} else if (sel.value() == "teleporter") {
-				teleporters.push(new Teleporter(initx, inity, initw, inith, identifier));
+				if (initx < mousex && inity < mousey) {
+					teleporters.push(new Teleporter(initx, inity, initw, inith, identifier));
+				} else if (initx > mousex && inity < mousey) {
+					teleporters.push(new Teleporter(initx-initw, inity, initw, inith, identifier));
+				} else if (initx < mousex && inity > mousey) {
+					teleporters.push(new Teleporter(initx, inity-inith, initw, inith, identifier));
+				} else {
+					teleporters.push(new Teleporter(initx-initw, inity-inith, initw, inith, identifier));
+				}
 				everything.push(teleporters[teleporters.length - 1]);
 				if (first) {
 					first = false;
