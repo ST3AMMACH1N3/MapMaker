@@ -8,6 +8,7 @@ function Teleporter(x, y, w, h, id) {
 	this.canTeleport = true;
 	
 	this.show = function() {
+		this.checkCollision();
 		push();
 		stroke(0);
 		strokeWeight(2);
@@ -26,7 +27,7 @@ function Teleporter(x, y, w, h, id) {
 		}
 	}
 	
-	this.checkCollision() {
+	this.checkCollision = function() {
 		if (this.canTeleport) {
 			for (var i = 0; i < players.length; i++) {
 				if (players[i].x + players[i].w / 2 > this.x && players[i].x - players[i].w / 2 < this.x + this.w) {
