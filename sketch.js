@@ -118,6 +118,9 @@ function draw () {
 		players[i].show();
 		if (testing) {
 			players[i].update();	
+		} else {
+			players[i].x = 	players[i].placedx
+			players[i].y = 	players[i].placedy
 		}
 	}
 	
