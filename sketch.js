@@ -279,7 +279,7 @@ function createOutput() {
 		paragraph.html(paragraph.html() + "teleporters.push(new Teleporter(" + teleporters[i].x + ", " + teleporters[i].y + ", " + teleporters[i].w + ", " + teleporters[i].h + ")); ")
 	}
 	for (var i = 0; i < players.length; i++) {
-		paragraph.html(paragraph.html() + "players.push(new Player(" + players[i].x + ", " + players[i].y + ")); ")
+		paragraph.html(paragraph.html() + "players.push(new Player(" + players[i].placedx + ", " + players[i].placedy + ")); ")
 	}
 }
 
