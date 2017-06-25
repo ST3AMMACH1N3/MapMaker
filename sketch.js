@@ -252,25 +252,73 @@ function keyPressed() {
 	
 	//if backspace is pressed delete the top block under the mouse cursor
 	if (keyCode == BACKSPACE) {
+		var indexLatest = 0;
+		var deleted = false;
 		for (var i = blocks.length-1; i >= 0; i--) {
 			if (mousex > blocks[i].x && mousex < blocks[i].x + blocks[i].w && mousey > blocks[i].y && mousey < blocks[i].y + blocks[i].h) {
-				blocks.splice(i,1);
-				break;
+				for (var j = everything.length; j >= 0; j--) {
+					if (everything[j] == blocks[i]) {
+						if (indexLatest < j) {
+							indexLatest = j;	
+						}
+					}
+				}
 			}
 		}
 		
 		for (var i = teleporters.length-1; i >= 0; i--) {
 			if (mousex > teleporters[i].x && mousex < teleporters[i].x + teleporters[i].w && mousey > teleporters[i].y && mousey < teleporters[i].y + teleporters[i].h) {
-				teleporters.splice(i,1);
-				break;
+				for (var j = everything.length; j >= 0; j--) {
+					if (everything[j] == teleporters[i]) {
+						if (indexLatest < j) {
+							indexLatest = j;	
+						}
+					}
+				}
 			}
 		}
 		
 		for (var i = players.length-1; i >= 0; i--) {
 			if (mousex > players[i].x - players[i].w / 2 && mousex < players[i].x + players[i].w / 2 && mousey > players[i].y - players[i].w / 2 && mousey < players[i].y + players[i].w / 2) {
-				players.splice(i,1);
+				for (var j = everything.length; j >= 0; j--) {
+					if (everything[j] == players[i]) {
+						if (indexLatest < j) {
+							indexLatest = j;	
+						}
+					}
+				}
+			}
+		}
+		
+		for (var i = blocks.length-1; i >= 0; i--){
+			if (blocks[i] == everything[indexLatest]) {
+				blocks.splice(i,1);
+				everything.splice(indexLatest, 1);
+				deleted = true;
 				break;
 			}
+		}
+		
+		if (!(deleted)) {
+			for (var i = teleporters.length-1; i >= 0; i--){
+				if (teleporters[i] == everything[indexLatest]) {
+					teleporters.splice(i,1);
+					everything.splice(indexLatest, 1);
+					deleted = true;
+					break;
+				}
+			}	
+		}
+		
+		if (!(deleted)) {
+			for (var i = players.length-1; i >= 0; i--){
+				if (players[i] == everything[indexLatest]) {
+					players.splice(i,1);
+					everything.splice(indexLatest, 1);
+					deleted = true;
+					break;
+				}
+			}	
 		}
 	}
 	
