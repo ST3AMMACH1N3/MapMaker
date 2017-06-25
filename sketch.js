@@ -37,7 +37,7 @@ function setup() {
 	
 	//creates a button to test the map
 	testButton = createButton("Test Game");
-	testButton.position(5, height + 30);
+	testButton.position(5, height + 40);
 	testButton.mousePressed(testGame);
 	
 	//creates an output to recreate the design in game
