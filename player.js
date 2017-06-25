@@ -79,13 +79,3 @@ function Player(x, y) {
 		}
 	}
 }
-
-function keyPressed() {
-	if (keyCode == 32) {
-		for (var i = 0; i < players.length; i++) {
-			if (players[i].accel == 0) {
-				players[i].jump();	
-			}
-		}
-	}
-}
