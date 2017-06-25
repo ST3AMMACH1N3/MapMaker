@@ -1,15 +1,19 @@
 function Teleporter(x, y, w, h, id) {
-	this.x = x
-	this.y = y
-	this.w = w
-	this.h = h
-	this.id = id
+	this.x = x;
+	this.y = y;
+	this.w = w;
+	this.h = h;
+	this.id = id;
+	this.color = map(id, 0, 50, 0, 255);
 	
 	this.show = function() {
+		push();
 		stroke(0);
 		strokeWeight(2);
-		fill(0, 255, 0);
+		colorMode(HSB)
+		fill(this.color, 100, 100);
 		rect(this.x,this.y,this.w,this.h);
+		pop();
 		
 		//draw the text above it's top-left corner showing it's x, y, width, and height
 		if (coordBox.checked()) {
