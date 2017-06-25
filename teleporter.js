@@ -35,8 +35,8 @@ function Teleporter(x, y, w, h, id) {
 						for (var j = 0; j < teleporters.length; j++) {
 							if (teleporters[j].id == this.id && !(teleporters[j] == this)) {
 								teleporters[j].canTeleport = false;
-								players[i].x = teleporters[j].x;
-								players[i].y = teleporters[j].y;
+								players[i].x = teleporters[j].x + teleporters[j].w / 2;
+								players[i].y = teleporters[j].y + teleporters[j].h / 2;
 								players[i].yspeed = 0;
 							}
 						}	
