@@ -4,7 +4,7 @@ function Teleporter(x, y, w, h, id) {
 	this.w = w;
 	this.h = h;
 	this.id = id;
-	this.color = map(id, 0, 50, 0, 255);
+	this.color = map(id, 0, 10, 0, 255);
 	
 	this.show = function() {
 		push();
