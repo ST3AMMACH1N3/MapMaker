@@ -269,3 +269,14 @@ function resetCamera() {
 	cam.x = 0;
 	cam.y = 0;
 }
+
+function keyPressed() {
+	if (keyCode == 32) {
+		for (var i = 0; i < players.length; i++) {
+			if (players[i].accel == 0) {
+				players[i].jump();
+			}
+		}
+	}
+
+}
