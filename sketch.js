@@ -246,11 +246,26 @@ function keyPressed() {
 				break;
 			}
 		}
+		
+		for (var i = players.length-1; i >= 0; i--) {
+			if (mousex > players[i].x && mousex < players[i].x + players[i].w && mousey > players[i].y && mousey < players[i].y + players[i].h) {
+				players.splice(i,1);
+				break;
+			}
+		}
 	}
 	
 	//call the function to output the code of the blocks
 	if (keyCode == ENTER) {
 		createOutput();
+	}
+	
+	if (keyCode == 32) {
+		for (var i = 0; i < players.length; i++) {
+			if (players[i].accel == 0) {
+				players[i].jump();
+			}
+		}
 	}
 }
 
@@ -287,15 +302,4 @@ function testGame() {
 		testing = true;
 		testButton.html("Stop Testing")
 	}
-}
-
-function keyPressed() {
-	if (keyCode == 32) {
-		for (var i = 0; i < players.length; i++) {
-			if (players[i].accel == 0) {
-				players[i].jump();
-			}
-		}
-	}
-
 }
