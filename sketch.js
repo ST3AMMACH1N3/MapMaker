@@ -127,6 +127,7 @@ function draw () {
 		} else {
 			players[i].x = 	players[i].placedx
 			players[i].y = 	players[i].placedy
+			players[i].yspeed = 0;
 		}
 	}
 	
@@ -301,9 +302,6 @@ function testGame() {
 	if (testing) {
 		testing = false;
 		testButton.html("Test Game")
-		for (var i = 0; i < players.length; i++) {
-			player[i].yspeed = 0;	
-		}
 	} else {
 		testing = true;
 		testButton.html("Stop Testing")
