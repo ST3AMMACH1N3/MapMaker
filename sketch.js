@@ -268,10 +268,11 @@ function mouseReleased() {
 						first = true;
 						identifier += 1;
 					}
-				} else if (sel.value() == "player") {
-					players.push(new Player(mousex, mousey));
-					everything.push(players[players.length - 1]);
 				}
+			}
+			if (sel.value() == "player") {
+				players.push(new Player(mousex, mousey));
+				everything.push(players[players.length - 1]);
 			}
 		} else {
 			moving = false;
