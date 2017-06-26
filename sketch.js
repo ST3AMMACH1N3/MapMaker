@@ -290,7 +290,7 @@ function keyPressed() {
 	}
 	
 	//if backspace is pressed delete the top block under the mouse cursor
-	if (keyCode == BACKSPACE) {
+	if (keyCode == BACKSPACE || keyCode == DELETE) {
 		var deleted = false;
 		
 		if (!(UnderMouse == -1)) {
