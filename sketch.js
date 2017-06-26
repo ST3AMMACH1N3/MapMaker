@@ -72,8 +72,11 @@ function setup() {
 	
 	//set up the grid value and the snap and drawing booleans
 	drawing = false;
-	moving = false;
 	grid = 16;
+	
+	//set up the variables for moving objects
+	UnderMouse = -1;
+	moving = false;
 	
 	//set up the variable to determine if you are testing or not
 	testing = false;
@@ -190,29 +193,39 @@ function draw () {
 		}
 		pop();
 	}
+	if (moving) {
+		movingItem();
+	} else {
+		//update what is under the mouse
+		UnderMouse = lastItemUnderMouse()
+	}
 }
 
 function mousePressed() {
 	//if left mouse pressed set the top-left corner of the rectangle to that mouse position
 	if (onScreen) {
 		if (mouseButton == LEFT) {
-			if (!(sel.value() == "player")) {
-				if (gridBox.checked()) {
-					if (mousex % grid < grid / 2) {
-						initx = mousex - mousex % grid
+			if ((UnderMouse == -1)) {
+				if (!(sel.value() == "player")) {
+					if (gridBox.checked()) {
+						if (mousex % grid < grid / 2) {
+							initx = mousex - mousex % grid
+						} else {
+							initx = mousex + (grid - mousex % grid);
+						}
+						if (mousey % grid < grid / 2) {
+							inity = mousey - mousey % grid;
+						} else {
+							inity = mousey + (grid - mousey % grid);
+						}
 					} else {
-						initx = mousex + (grid - mousex % grid);
+						initx = mousex;
+						inity = mousey;
 					}
-					if (mousey % grid < grid / 2) {
-						inity = mousey - mousey % grid;
-					} else {
-						inity = mousey + (grid - mousey % grid);
-					}
-				} else {
-					initx = mousex;
-					inity = mousey;
+					drawing = true;
 				}
-				drawing = true;
+			} else {
+				moving = true;
 			}
 		}
 	}
@@ -222,40 +235,44 @@ function mouseReleased() {
 	//if the left mouse button is released create the block you were drawing
 	if (onScreen) {
 		if (mouseButton == LEFT) {
-			drawing = false;
-			if (sel.value() == "block") {
-				if (initw > 0 && inith > 0) {
-					if (initx < mousex && inity < mousey) {
-						blocks.push(new Block(initx, inity, initw, inith));
-					} else if (initx > mousex && inity < mousey) {
-						blocks.push(new Block(initx-initw, inity, initw, inith));
-					} else if (initx < mousex && inity > mousey) {
-						blocks.push(new Block(initx, inity-inith, initw, inith));
-					} else {
-						blocks.push(new Block(initx-initw, inity-inith, initw, inith));
+			if (!(moving)) {
+				drawing = false;
+				if (sel.value() == "block") {
+					if (initw > 0 && inith > 0) {
+						if (initx < mousex && inity < mousey) {
+							blocks.push(new Block(initx, inity, initw, inith));
+						} else if (initx > mousex && inity < mousey) {
+							blocks.push(new Block(initx-initw, inity, initw, inith));
+						} else if (initx < mousex && inity > mousey) {
+							blocks.push(new Block(initx, inity-inith, initw, inith));
+						} else {
+							blocks.push(new Block(initx-initw, inity-inith, initw, inith));
+						}
+						everything.push(blocks[blocks.length - 1]);
 					}
-					everything.push(blocks[blocks.length - 1]);
+				} else if (sel.value() == "teleporter") {
+					if (initx < mousex && inity < mousey) {
+						teleporters.push(new Teleporter(initx, inity, initw, inith, identifier));
+					} else if (initx > mousex && inity < mousey) {
+						teleporters.push(new Teleporter(initx-initw, inity, initw, inith, identifier));
+					} else if (initx < mousex && inity > mousey) {
+						teleporters.push(new Teleporter(initx, inity-inith, initw, inith, identifier));
+					} else {
+						teleporters.push(new Teleporter(initx-initw, inity-inith, initw, inith, identifier));
+					}
+					everything.push(teleporters[teleporters.length - 1]);
+					if (first) {
+						first = false;
+					} else {
+						first = true;
+						identifier += 1;
+					}
+				} else if (sel.value() == "player") {
+					players.push(new Player(mousex, mousey));
+					everything.push(players[players.length - 1]);
 				}
-			} else if (sel.value() == "teleporter") {
-				if (initx < mousex && inity < mousey) {
-					teleporters.push(new Teleporter(initx, inity, initw, inith, identifier));
-				} else if (initx > mousex && inity < mousey) {
-					teleporters.push(new Teleporter(initx-initw, inity, initw, inith, identifier));
-				} else if (initx < mousex && inity > mousey) {
-					teleporters.push(new Teleporter(initx, inity-inith, initw, inith, identifier));
-				} else {
-					teleporters.push(new Teleporter(initx-initw, inity-inith, initw, inith, identifier));
-				}
-				everything.push(teleporters[teleporters.length - 1]);
-				if (first) {
-					first = false;
-				} else {
-					first = true;
-					identifier += 1;
-				}
-			} else if (sel.value() == "player") {
-				players.push(new Player(mousex, mousey));
-				everything.push(players[players.length - 1]);
+			} else {
+				moving = false;
 			}
 		}
 	}
@@ -267,84 +284,46 @@ function mouseReleased() {
 }
 
 function keyPressed() {
-	//if you press control it toggles the grid
+	
 	if (keyCode == CONTROL) {
-		if (snap) {
-			snap = false;
-		} else {
-			snap = true;
-		}
+		
 	}
 	
 	//if backspace is pressed delete the top block under the mouse cursor
 	if (keyCode == BACKSPACE) {
-		var indexLatest = 0;
 		var deleted = false;
-		for (var i = blocks.length-1; i >= 0; i--) {
-			if (mousex > blocks[i].x && mousex < blocks[i].x + blocks[i].w && mousey > blocks[i].y && mousey < blocks[i].y + blocks[i].h) {
-				for (var j = everything.length; j >= 0; j--) {
-					if (everything[j] == blocks[i]) {
-						if (indexLatest < j) {
-							indexLatest = j;	
-						}
-					}
-				}
-			}
-		}
 		
-		for (var i = teleporters.length-1; i >= 0; i--) {
-			if (mousex > teleporters[i].x && mousex < teleporters[i].x + teleporters[i].w && mousey > teleporters[i].y && mousey < teleporters[i].y + teleporters[i].h) {
-				for (var j = everything.length; j >= 0; j--) {
-					if (everything[j] == teleporters[i]) {
-						if (indexLatest < j) {
-							indexLatest = j;	
-						}
-					}
-				}
-			}
-		}
-		
-		for (var i = players.length-1; i >= 0; i--) {
-			if (mousex > players[i].x - players[i].w / 2 && mousex < players[i].x + players[i].w / 2 && mousey > players[i].y - players[i].w / 2 && mousey < players[i].y + players[i].w / 2) {
-				for (var j = everything.length; j >= 0; j--) {
-					if (everything[j] == players[i]) {
-						if (indexLatest < j) {
-							indexLatest = j;	
-						}
-					}
-				}
-			}
-		}
-		
-		for (var i = blocks.length-1; i >= 0; i--){
-			if (blocks[i] == everything[indexLatest]) {
-				blocks.splice(i,1);
-				everything.splice(indexLatest, 1);
-				deleted = true;
-				break;
-			}
-		}
-		
-		if (!(deleted)) {
-			for (var i = teleporters.length-1; i >= 0; i--){
-				if (teleporters[i] == everything[indexLatest]) {
-					teleporters.splice(i,1);
-					everything.splice(indexLatest, 1);
+		if (!(UnderMouse == -1)) {
+			for (var i = blocks.length-1; i >= 0; i--){
+				if (blocks[i] == everything[UnderMouse]) {
+					blocks.splice(i,1);
+					everything.splice(UnderMouse, 1);
 					deleted = true;
 					break;
 				}
-			}	
-		}
+			}
 		
-		if (!(deleted)) {
-			for (var i = players.length-1; i >= 0; i--){
-				if (players[i] == everything[indexLatest]) {
-					players.splice(i,1);
-					everything.splice(indexLatest, 1);
-					deleted = true;
-					break;
-				}
-			}	
+			if (!(deleted)) {
+				for (var i = teleporters.length-1; i >= 0; i--){
+					if (teleporters[i] == everything[UnderMouse]) {
+						teleporters.splice(i,1);
+						everything.splice(UnderMouse, 1);
+						deleted = true;
+						break;
+					}
+				}	
+			}
+		
+			if (!(deleted)) {
+				for (var i = players.length-1; i >= 0; i--){
+					if (players[i] == everything[UnderMouse]) {
+						players.splice(i,1);
+						everything.splice(UnderMouse, 1);
+						deleted = true;
+						break;
+					}
+				}	
+			}
 		}
 	}
 	
@@ -400,5 +379,112 @@ function testGame() {
 	} else {
 		testing = true;
 		testButton.html("Stop Testing")
+	}
+}
+
+function lastItemUnderMouse() {
+	
+	var indexLatest = -1;
+	
+	for (var i = blocks.length-1; i >= 0; i--) {
+		if (mousex > blocks[i].x && mousex < blocks[i].x + blocks[i].w && mousey > blocks[i].y && mousey < blocks[i].y + blocks[i].h) {
+			for (var j = everything.length; j >= 0; j--) {
+				if (everything[j] == blocks[i]) {
+					if (indexLatest < j) {
+						indexLatest = j;	
+					}
+				}
+			}
+		}
+	}
+		
+	for (var i = teleporters.length-1; i >= 0; i--) {
+		if (mousex > teleporters[i].x && mousex < teleporters[i].x + teleporters[i].w && mousey > teleporters[i].y && mousey < teleporters[i].y + teleporters[i].h) {
+			for (var j = everything.length; j >= 0; j--) {
+				if (everything[j] == teleporters[i]) {
+					if (indexLatest < j) {
+						indexLatest = j;	
+					}
+				}
+			}
+		}
+	}
+		
+	for (var i = players.length-1; i >= 0; i--) {
+		if (mousex > players[i].x - players[i].w / 2 && mousex < players[i].x + players[i].w / 2 && mousey > players[i].y - players[i].w / 2 && mousey < players[i].y + players[i].w / 2) {
+			for (var j = everything.length; j >= 0; j--) {
+				if (everything[j] == players[i]) {
+					if (indexLatest < j) {
+						indexLatest = j;	
+					}
+				}
+			}
+		}
+	}
+	
+	return indexLatest;
+}
+
+function movingItem() {
+	
+	var moved = false;
+	
+	if (!(UnderMouse == -1)) {
+		for (var i = blocks.length-1; i >= 0; i--){
+			if (blocks[i] == everything[UnderMouse]) {
+				if (gridBox.checked()) {
+					if ((mousex - blocks[i].w / 2) % grid < grid / 2) {
+						blocks[i].x = mousex - blocks[i].w / 2 - ((mousex - blocks[i].w / 2) % grid)
+					} else {
+						blocks[i].x = mousex - blocks[i].w / 2 + (grid - (mousex - blocks[i].w / 2) % grid)
+					}
+					if ((mousey - blocks[i].h / 2) % grid < grid / 2) {
+						blocks[i].y = mousey - blocks[i].h / 2 - ((mousey - blocks[i].h / 2) % grid)
+					} else {
+						blocks[i].y = mousey - blocks[i].h / 2 + (grid - (mousey - blocks[i].h / 2) % grid)
+					}
+				} else {
+					blocks[i].x = mousex - blocks[i].w / 2;
+					blocks[i].y = mousey - blocks[i].h / 2;
+				}
+				moved = true;
+				break;
+			}
+		}
+		
+		if (!(moved)) {
+			for (var i = teleporters.length-1; i >= 0; i--){
+				if (teleporters[i] == everything[UnderMouse]) {
+					if (gridBox.checked()) {
+						if ((mousex - teleporters[i].w / 2) % grid < grid / 2) {
+							teleporters[i].x = mousex - teleporters[i].w / 2 - ((mousex - teleporters[i].w / 2) % grid)
+						} else {
+							teleporters[i].x = mousex - teleporters[i].w / 2 + (grid - (mousex - teleporters[i].w / 2) % grid)
+						}
+						if ((mousey - teleporters[i].h / 2) % grid < grid / 2) {
+							teleporters[i].y = mousey - teleporters[i].h / 2 - ((mousey - teleporters[i].h / 2) % grid)
+						} else {
+							teleporters[i].y = mousey - teleporters[i].h / 2 + (grid - (mousey - teleporters[i].h / 2) % grid)
+						}
+					} else {
+						teleporters[i].x = mousex - teleporters[i].w / 2;
+						teleporters[i].y = mousey - teleporters[i].h / 2;
+					}
+					moved = true;
+					break;
+				}
+			}	
+		}
+		
+		if (!(moved)) {
+			for (var i = players.length-1; i >= 0; i--){
+				if (players[i] == everything[UnderMouse]) {
+					players[i].placedx = mousex
+					players[i].placedy = mousey
+					moved = true;
+					break;
+				}
+			}	
+		}
 	}
 }
