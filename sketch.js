@@ -271,8 +271,10 @@ function mouseReleased() {
 				}
 			}
 			if (sel.value() == "player") {
-				players.push(new Player(mousex, mousey));
-				everything.push(players[players.length - 1]);
+				if (onScreen) {
+					players.push(new Player(mousex, mousey));
+					everything.push(players[players.length - 1]);
+				}
 			}
 		} else {
 			moving = false;
