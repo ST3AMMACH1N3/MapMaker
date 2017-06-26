@@ -236,40 +236,42 @@ function mouseReleased() {
 	//if (onScreen) {
 		if (mouseButton == LEFT) {
 			if (!(moving)) {
-				drawing = false;
-				if (sel.value() == "block") {
-					if (initw > 0 && inith > 0) {
-						if (initx < mousex && inity < mousey) {
-							blocks.push(new Block(initx, inity, initw, inith));
-						} else if (initx > mousex && inity < mousey) {
-							blocks.push(new Block(initx-initw, inity, initw, inith));
-						} else if (initx < mousex && inity > mousey) {
-							blocks.push(new Block(initx, inity-inith, initw, inith));
-						} else {
-							blocks.push(new Block(initx-initw, inity-inith, initw, inith));
+				if (drawing) {
+					drawing = false;
+					if (sel.value() == "block") {
+						if (initw > 0 && inith > 0) {
+							if (initx < mousex && inity < mousey) {
+								blocks.push(new Block(initx, inity, initw, inith));
+							} else if (initx > mousex && inity < mousey) {
+								blocks.push(new Block(initx-initw, inity, initw, inith));
+							} else if (initx < mousex && inity > mousey) {
+								blocks.push(new Block(initx, inity-inith, initw, inith));
+							} else {
+								blocks.push(new Block(initx-initw, inity-inith, initw, inith));
+							}
+							everything.push(blocks[blocks.length - 1]);
 						}
-						everything.push(blocks[blocks.length - 1]);
+					} else if (sel.value() == "teleporter") {
+						if (initx < mousex && inity < mousey) {
+							teleporters.push(new Teleporter(initx, inity, initw, inith, identifier));
+						} else if (initx > mousex && inity < mousey) {
+							teleporters.push(new Teleporter(initx-initw, inity, initw, inith, identifier));
+						} else if (initx < mousex && inity > mousey) {
+							teleporters.push(new Teleporter(initx, inity-inith, initw, inith, identifier));
+						} else {
+							teleporters.push(new Teleporter(initx-initw, inity-inith, initw, inith, identifier));
+						}
+						everything.push(teleporters[teleporters.length - 1]);
+						if (first) {
+							first = false;
+						} else {
+							first = true;
+							identifier += 1;
+						}
+					} else if (sel.value() == "player") {
+						players.push(new Player(mousex, mousey));
+						everything.push(players[players.length - 1]);
 					}
-				} else if (sel.value() == "teleporter") {
-					if (initx < mousex && inity < mousey) {
-						teleporters.push(new Teleporter(initx, inity, initw, inith, identifier));
-					} else if (initx > mousex && inity < mousey) {
-						teleporters.push(new Teleporter(initx-initw, inity, initw, inith, identifier));
-					} else if (initx < mousex && inity > mousey) {
-						teleporters.push(new Teleporter(initx, inity-inith, initw, inith, identifier));
-					} else {
-						teleporters.push(new Teleporter(initx-initw, inity-inith, initw, inith, identifier));
-					}
-					everything.push(teleporters[teleporters.length - 1]);
-					if (first) {
-						first = false;
-					} else {
-						first = true;
-						identifier += 1;
-					}
-				} else if (sel.value() == "player") {
-					players.push(new Player(mousex, mousey));
-					everything.push(players[players.length - 1]);
 				}
 			} else {
 				moving = false;
