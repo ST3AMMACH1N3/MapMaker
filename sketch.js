@@ -233,7 +233,7 @@ function mousePressed() {
 
 function mouseReleased() {
 	//if the left mouse button is released create the block you were drawing
-	if (onScreen) {
+	//if (onScreen) {
 		if (mouseButton == LEFT) {
 			if (!(moving)) {
 				drawing = false;
@@ -275,7 +275,7 @@ function mouseReleased() {
 				moving = false;
 			}
 		}
-	}
+	//}
 	
 	//if the right mouse button is released delete the top block under the mouse cursor*** changed to backspace
 	if (mouseButton == RIGHT) {
