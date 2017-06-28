@@ -83,6 +83,8 @@ function setup() {
 	
 	//create and id and counter variable for teleporters
 	identifier = 0;
+	tempId = 0;
+	missingIds = [];
 	first = true;
 }
 
@@ -262,11 +264,24 @@ function mouseReleased() {
 						teleporters.push(new Teleporter(initx-initw, inity-inith, initw, inith, identifier));
 					}
 					everything.push(teleporters[teleporters.length - 1]);
-					if (first) {
-						first = false;
+					if (!(identifier == tempId)) {
+						if (missingIds.length > 1){
+							missingIds.splice(0,1);
+							identifier = missingIds[0];
+						} else if (missingIds.length == 1) {
+							missingIds.splice(0,1);
+							identifier = tempId;
+						} else {
+							identifier = tempId;
+						}
 					} else {
-						first = true;
-						identifier += 1;
+						if (first) {
+							first = false;
+						} else {
+							first = true;
+							identifier += 1;
+							tempId = identifier;
+						}
 					}
 				}
 			}
@@ -310,6 +325,13 @@ function keyPressed() {
 			if (!(deleted)) {
 				for (var i = teleporters.length-1; i >= 0; i--){
 					if (teleporters[i] == everything[UnderMouse]) {
+						if (teleporters[i].id == tempId){
+							first = true;
+						} else {
+							missingIds.push(teleporters[i].id);
+							missingIds.sort();
+							identifier = missingIds[0];
+						}
 						teleporters.splice(i,1);
 						everything.splice(UnderMouse, 1);
 						deleted = true;
