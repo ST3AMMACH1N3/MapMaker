@@ -254,33 +254,35 @@ function mouseReleased() {
 						everything.push(blocks[blocks.length - 1]);
 					}
 				} else if (sel.value() == "teleporter") {
-					if (initx < mousex && inity < mousey) {
-						teleporters.push(new Teleporter(initx, inity, initw, inith, identifier));
-					} else if (initx > mousex && inity < mousey) {
-						teleporters.push(new Teleporter(initx-initw, inity, initw, inith, identifier));
-					} else if (initx < mousex && inity > mousey) {
-						teleporters.push(new Teleporter(initx, inity-inith, initw, inith, identifier));
-					} else {
-						teleporters.push(new Teleporter(initx-initw, inity-inith, initw, inith, identifier));
-					}
-					everything.push(teleporters[teleporters.length - 1]);
-					if (!(identifier == tempId)) {
-						if (missingIds.length > 1){
-							missingIds.splice(0,1);
-							identifier = missingIds[0];
-						} else if (missingIds.length == 1) {
-							missingIds.splice(0,1);
-							identifier = tempId;
+					if (initw > 0 && inith > 0) {
+						if (initx < mousex && inity < mousey) {
+							teleporters.push(new Teleporter(initx, inity, initw, inith, identifier));
+						} else if (initx > mousex && inity < mousey) {
+							teleporters.push(new Teleporter(initx-initw, inity, initw, inith, identifier));
+						} else if (initx < mousex && inity > mousey) {
+							teleporters.push(new Teleporter(initx, inity-inith, initw, inith, identifier));
 						} else {
-							identifier = tempId;
+							teleporters.push(new Teleporter(initx-initw, inity-inith, initw, inith, identifier));
 						}
-					} else {
-						if (first) {
-							first = false;
+						everything.push(teleporters[teleporters.length - 1]);
+						if (!(identifier == tempId)) {
+							if (missingIds.length > 1){
+								missingIds.splice(0,1);
+								identifier = missingIds[0];
+							} else if (missingIds.length == 1) {
+								missingIds.splice(0,1);
+								identifier = tempId;
+							} else {
+								identifier = tempId;
+							}
 						} else {
-							first = true;
-							identifier += 1;
-							tempId = identifier;
+							if (first) {
+								first = false;
+							} else {
+								first = true;
+								identifier += 1;
+								tempId = identifier;
+							}
 						}
 					}
 				}
