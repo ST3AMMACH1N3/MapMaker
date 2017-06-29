@@ -31,7 +31,7 @@ function Teleporter(x, y, w, h, id) {
 		if (this.canTeleport) {
 			for (var i = 0; i < players.length; i++) {
 				if (players[i].x + players[i].w / 2 > this.x && players[i].x - players[i].w / 2 < this.x + this.w) {
-					if (players[i].y + players[i].w / 2 > this.y && players[i].y - players[i].w / 2 < this.y + this.h) {
+					if (players[i].y + players[i].h / 2 > this.y && players[i].y - players[i].h / 2 < this.y + this.h) {
 						for (var j = 0; j < teleporters.length; j++) {
 							if (teleporters[j].id == this.id && !(teleporters[j] == this)) {
 								teleporters[j].canTeleport = false;
