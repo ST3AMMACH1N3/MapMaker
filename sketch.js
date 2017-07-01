@@ -5,6 +5,9 @@ function setup() {
 	canv = createCanvas(600,600);
 	canv.position(5, 5);
 	
+	//make it so when you drag a file onto the screen it loads the map
+	canv.drop(gotFile);
+	
 	//make it so you can only draw when the mouse is over the canvas
 	onScreen = false;
 	canv.mouseOut(toggleOnScreen);
@@ -44,6 +47,9 @@ function setup() {
 	paragraph = createP("This is where the output will be");
 	paragraph.position(width + 12, 0);
 	paragraph.size(350,700);
+	
+	//make an array of strings for the output
+	stringArray = [];
 	
 	//make and array for everything you create
 	everything = [];
@@ -367,18 +373,23 @@ function keyPressed() {
 	}
 }
 
-//out put the code that makes the blocks to the paragraph
+//output the code that makes the blocks to the paragraph
 function createOutput() {
+	stringArray = [];
 	paragraph.html("")
 	for (var i = 0; i < blocks.length; i++) {
-		paragraph.html(paragraph.html() + "blocks.push(new Block(" + blocks[i].x + ", " + blocks[i].y + ", " + blocks[i].w + ", " + blocks[i].h + ")); ")
+		paragraph.html(paragraph.html() + "blocks.push(new Block(" + blocks[i].x + ", " + blocks[i].y + ", " + blocks[i].w + ", " + blocks[i].h + ")); ");
+		stringArray.push("blocks.push(new Block(" + blocks[i].x + ", " + blocks[i].y + ", " + blocks[i].w + ", " + blocks[i].h + "));");
 	}
 	for (var i = 0; i < teleporters.length; i++) {
-		paragraph.html(paragraph.html() + "teleporters.push(new Teleporter(" + teleporters[i].x + ", " + teleporters[i].y + ", " + teleporters[i].w + ", " + teleporters[i].h + ")); ")
+		paragraph.html(paragraph.html() + "teleporters.push(new Teleporter(" + teleporters[i].x + ", " + teleporters[i].y + ", " + teleporters[i].w + ", " + teleporters[i].h + ", " + teleporters[i].id + ")); ");
+		stringArray.push("teleporters.push(new Teleporter(" + teleporters[i].x + ", " + teleporters[i].y + ", " + teleporters[i].w + ", " + teleporters[i].h + ", " + teleporters[i].id + "));");
 	}
 	for (var i = 0; i < players.length; i++) {
-		paragraph.html(paragraph.html() + "players.push(new Player(" + players[i].placedx + ", " + players[i].placedy + ")); ")
+		paragraph.html(paragraph.html() + "players.push(new Player(" + players[i].placedx + ", " + players[i].placedy + ")); ");
+		stringArray.push("players.push(new Player(" + players[i].placedx + ", " + players[i].placedy + "));");
 	}
+	save(stringArray, 'map.txt');
 }
 
 //toggle between whether the mouse is on or off screen so you can't accidentally make blocks
@@ -390,11 +401,13 @@ function toggleOnScreen() {
 	}
 }
 
+//reset the cam to the top left corner
 function resetCamera() {
 	cam.x = 0;
 	cam.y = 0;
 }
 
+//load the phyics and allow controlling of the player
 function testGame() {
 	if (testing) {
 		testing = false;
@@ -408,6 +421,7 @@ function testGame() {
 	}
 }
 
+//find the index of top item under the mouse
 function lastItemUnderMouse() {
 	
 	var indexLatest = -1;
@@ -451,6 +465,7 @@ function lastItemUnderMouse() {
 	return indexLatest;
 }
 
+//move the item that you are dragging to where your mouse is
 function movingItem() {
 	
 	var moved = false;
@@ -505,12 +520,87 @@ function movingItem() {
 		if (!(moved)) {
 			for (var i = players.length-1; i >= 0; i--){
 				if (players[i] == everything[UnderMouse]) {
-					players[i].placedx = mousex
-					players[i].placedy = mousey
+					players[i].placedx = mousex;
+					players[i].placedy = mousey;
 					moved = true;
 					break;
 				}
 			}	
+		}
+	}
+}
+
+//put the lines of the file into an array, then call parse
+function gotFile(file) {
+	var r = confirm("You are about to overwrite your current map!");
+	if (r) {
+		var string = file.data;
+		var array = [];
+		var sub = "";
+		if (file.type == 'text') {
+			for (var i = 0; i < string.length; i++) {
+				if (!(string[i] == ";") && !(string[i] == "\n")) {
+					sub += string[i];
+				} else {
+					if (!(sub == "")) {
+						array.push(sub);
+						sub = "";
+					}
+				}
+			}
+			parse(array);
+		}
+	}
+}
+
+//take each line of the file, determine what it is trying to create, parse out the information, and create the objects described in the file
+function parse(list) {
+	var array = list;
+	var sub, num, objType, x, y, w, h, id;
+	for (var i = 0; i < array.length; i++) {
+		num = "";
+		sub = array[i];
+		x = -1;
+		y = -1;
+		w = -1;
+		h = -1;
+		id = -1;
+		if (array[i][0] == "b") {
+			objType = "block";
+		} else if (array[i][0] == "t") {
+			objType = "teleporter";
+		} else if (array[i][0] == "p") {
+			objType = "player";
+		}
+		for (var j = 0; j < sub.length; j++) {
+			if (!(sub[j] == "") && !(sub[j] == " ") && !(isNaN(sub[j]))) {
+				num += sub[j];
+			} else {
+				if (!(num == "")) {
+					if (x == -1) {
+						x = parseInt(num);
+					} else if (y == -1) {
+						y = parseInt(num);
+					} else if (w == -1) {
+						w = parseInt(num);
+					} else if (h == -1) {
+						h = parseInt(num);
+					} else if (id == -1) {
+						id = parseInt(num);
+					}
+					num = "";
+				}
+			}
+		}
+		if (objType == "block") {
+			blocks.push(new Block(x, y, w, h));
+			everything.push(blocks[blocks.length - 1]);
+		} else if (objType == "teleporter") {
+			teleporters.push(new Teleporter(x, y, w, h, id));
+			everything.push(teleporters[teleporters.length - 1]);
+		} else if (objType == "player") {
+			players.push(new Player(x, y));
+			everything.push(players[players.length - 1]);
 		}
 	}
 }

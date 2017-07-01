@@ -1,4 +1,5 @@
 function Player(x, y) {
+	//initialize the players variables
 	this.x = x;
 	this.y = y;
 	this.placedx = x;
@@ -9,6 +10,7 @@ function Player(x, y) {
 	this.hspeed = 0;
 	this.accel = 0.5;
 	
+	//update the players speed and position
 	this.update = function() {
 		this.yspeed += this.accel;
 		if (this.yspeed > 12) {
@@ -24,6 +26,7 @@ function Player(x, y) {
 		}
 	}
 	
+	//draw the player to the screen
 	this.show = function() {
 		stroke(0);
 		strokeWeight(1);
@@ -36,10 +39,12 @@ function Player(x, y) {
 		point(this.x,this.y);
 	}
 	
+	//send the player up into the air
 	this.jump = function() {
 		this.yspeed = -12;
 	}
 	
+	//check if the player can move horizontally, and if he can, do it
 	this.move = function(hor) {
 		var canMove = true;
 		for (var i = 0; i < blocks.length; i++) {
@@ -63,6 +68,7 @@ function Player(x, y) {
 		}
 	}
 	
+	//check if the player can fall, and if he can, do it. Otherwise set his acceleration and speed to 0
 	this.fall = function(ver) {
 		var canFall = true;
 		for (var i = 0; i < blocks.length; i++) {

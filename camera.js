@@ -5,9 +5,10 @@ function Camera() {
 	this.z = 50;
 	this.speed = 5;
 	
-	//move the camera corresponding to keys pressed
+	//update the cameras positioning
 	this.update = function() {
 		
+		//if it's in testing mode move the camera with the player
 		if (testing) {
 			if (players[0].x > this.x + (width * 2) / 3) {
 				if (players[0].x > this.x + width) {
@@ -37,7 +38,7 @@ function Camera() {
 					this.y -= 5;
 				}
 			}
-		} else {
+		} else { //otherwise move the camera corresponding to keys pressed
 			//A
 			if (keyIsDown(65)) {
 				this.x -= this.speed;
