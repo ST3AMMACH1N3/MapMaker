@@ -575,11 +575,11 @@ function parse(list) {
 	for (var i = 0; i < array.length; i++) {
 		num = "";
 		sub = array[i];
-		x = -1;
-		y = -1;
-		w = -1;
-		h = -1;
-		id = -1;
+		x = null;
+		y = null;
+		w = null;
+		h = null;
+		id = null;
 		if (array[i][0] == "b") {
 			objType = "block";
 		} else if (array[i][0] == "t") {
@@ -592,15 +592,15 @@ function parse(list) {
 				num += sub[j];
 			} else {
 				if (!(num == "")) {
-					if (x == -1) {
+					if (x == null) {
 						x = parseInt(num);
-					} else if (y == -1) {
+					} else if (y == null) {
 						y = parseInt(num);
-					} else if (w == -1) {
+					} else if (w == null) {
 						w = parseInt(num);
-					} else if (h == -1) {
+					} else if (h == null) {
 						h = parseInt(num);
-					} else if (id == -1) {
+					} else if (id == null) {
 						id = parseInt(num);
 					}
 					num = "";
