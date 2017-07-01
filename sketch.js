@@ -1,4 +1,4 @@
-var canv, input, gridBox, coordBox, sel, centerButton, testButton, paragraph;
+var canv, input, gridBox, coordBox, sel, centerButton, testButton, saveButton, paragraph;
 
 function setup() {
 	//create the canvas
@@ -43,9 +43,14 @@ function setup() {
 	testButton.position(5, height + 40);
 	testButton.mousePressed(testGame);
 	
-	//creates an output to recreate the design in game
+	//creates a button to save the map to a file
+	saveButton = createButton("Save Map");
+	saveButton.position(width + 12, 5);
+	saveButton.mousePressed(saveMap);
+	
+	//creates an paragraph output on the webpage to recreate the design in game
 	paragraph = createP("This is where the output will be");
-	paragraph.position(width + 12, 0);
+	paragraph.position(width + 12, 15);
 	paragraph.size(350,700);
 	
 	//make an array of strings for the output
@@ -375,18 +380,28 @@ function keyPressed() {
 
 //output the code that makes the blocks to the paragraph
 function createOutput() {
-	stringArray = [];
 	paragraph.html("")
 	for (var i = 0; i < blocks.length; i++) {
 		paragraph.html(paragraph.html() + "blocks.push(new Block(" + blocks[i].x + ", " + blocks[i].y + ", " + blocks[i].w + ", " + blocks[i].h + ")); ");
-		stringArray.push("blocks.push(new Block(" + blocks[i].x + ", " + blocks[i].y + ", " + blocks[i].w + ", " + blocks[i].h + "));");
 	}
 	for (var i = 0; i < teleporters.length; i++) {
 		paragraph.html(paragraph.html() + "teleporters.push(new Teleporter(" + teleporters[i].x + ", " + teleporters[i].y + ", " + teleporters[i].w + ", " + teleporters[i].h + ", " + teleporters[i].id + ")); ");
-		stringArray.push("teleporters.push(new Teleporter(" + teleporters[i].x + ", " + teleporters[i].y + ", " + teleporters[i].w + ", " + teleporters[i].h + ", " + teleporters[i].id + "));");
 	}
 	for (var i = 0; i < players.length; i++) {
 		paragraph.html(paragraph.html() + "players.push(new Player(" + players[i].placedx + ", " + players[i].placedy + ")); ");
+	}
+}
+
+//output the code that makes the blocks to a map file
+function saveMap() {
+	stringArray = [];
+	for (var i = 0; i < blocks.length; i++) {
+		stringArray.push("blocks.push(new Block(" + blocks[i].x + ", " + blocks[i].y + ", " + blocks[i].w + ", " + blocks[i].h + "));");
+	}
+	for (var i = 0; i < teleporters.length; i++) {
+		stringArray.push("teleporters.push(new Teleporter(" + teleporters[i].x + ", " + teleporters[i].y + ", " + teleporters[i].w + ", " + teleporters[i].h + ", " + teleporters[i].id + "));");
+	}
+	for (var i = 0; i < players.length; i++) {
 		stringArray.push("players.push(new Player(" + players[i].placedx + ", " + players[i].placedy + "));");
 	}
 	save(stringArray, 'map.txt');
